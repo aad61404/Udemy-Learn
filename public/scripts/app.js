@@ -1,40 +1,82 @@
 'use strict';
 
-var _react = require('react');
+var _redux = require('redux');
 
-var _react2 = _interopRequireDefault(_react);
+var incrementCount = function incrementCount() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref$incrementBy = _ref.incrementBy,
+        incrementBy = _ref$incrementBy === undefined ? 1 : _ref$incrementBy;
 
-var _reactDom = require('react-dom');
+    return {
+        type: 'INCREMENT',
+        incrementBy: incrementBy
+    };
+};
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
+var decrementCount = function decrementCount() {
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref2$decrementBy = _ref2.decrementBy,
+        decrementBy = _ref2$decrementBy === undefined ? 1 : _ref2$decrementBy;
 
-var _IndecisionApp = require('./components/IndecisionApp');
+    return {
+        type: "DECREMENT",
+        decrementBy: decrementBy
+    };
+};
 
-var _IndecisionApp2 = _interopRequireDefault(_IndecisionApp);
+var setCount = function setCount(_ref3) {
+    var count = _ref3.count;
+    return {
+        type: "SET",
+        count: count
+    };
+};
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var resetCount = function resetCount() {
+    return {
+        type: 'RESET'
+    };
+};
 
-_reactDom2.default.render(_react2.default.createElement(_IndecisionApp2.default, null), document.getElementById('app'));
+var store = (0, _redux.createStore)(function () {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { count: 0 };
+    var action = arguments[1];
 
-// const template = <p>This is JS from webpack</p>
-// ReactDOM.render(template, document.getElementById('app'));
+    switch (action.type) {
+        case 'INCREMENT':
+            return {
+                count: state.count + action.incrementBy
+            };
+        case 'DECREMENT':
+            return {
+                count: state.count - action.decrementBy
+            };
 
-// import validator from 'validator';
-// console.log(validator.isEmail('test'));
-// console.log(validator.isEmail('asd@gmail.com'));
+        case 'SET':
+            return {
+                count: action.count
+            };
+        case 'RESET':
+            return {
+                count: 0
+            };
+        default:
+            return state;
+    }
+});
 
+var unsubscribe = store.subscribe(function () {
+    console.log(store.getState());
+});
 
-// import subtract , { square, add } from './utils.js';
-// import isSenior , { isAdult, canDrink } from './person.js';
+store.dispatch(incrementCount({ incrementBy: 5 }));
 
-// console.log('app.js is running');
-// console.log(square(2));
-// console.log(add(2,3));
-// console.log(isAdult(15))
-// console.log(isAdult(18))
-// console.log(canDrink(20))
-// console.log(canDrink(21))
-// console.log(subtract(100, 81));
-// console.log(isSenior(50))
-// console.log(isSenior(65))
-// babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch
+store.dispatch(incrementCount());
+
+store.dispatch(resetCount());
+
+store.dispatch(decrementCount());
+
+store.dispatch(decrementCount({ decrementBy: 10 }));
+
+store.dispatch(setCount({ count: -100 }));
